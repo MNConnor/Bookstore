@@ -1,0 +1,4 @@
+USER_SELECT_Bookstore:booklogin
+PW_SELECT_Bookstore:bookpass
+USER_ROOT:root
+PW_ROOT:J628wsz
