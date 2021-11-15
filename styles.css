@@ -1,0 +1,112 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poppins|Inconsolata|Droid+Sans');
+*{
+    font-family: "Poppins", Helvetica, sans-serif;
+}
+
+#editbutton
+{
+    background-color: gray;
+    padding: 4px 32px;
+}
+
+#loginheader
+{
+    text-align: center;
+    font-weight:bold;
+
+}
+
+#LoginBox
+{
+    text-align: center;
+    padding: 12px 20px;
+}
+
+#usernamebox, #passwordbox
+{
+    width: 15%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    text-align: center;
+    font-size: large;
+}
+
+#deliveredbutton:hover
+{
+    background-color: lightgreen;
+    border: none;
+}
+
+#undeliveredbutton:hover
+{
+    background-color: lightcoral;
+    border: none;
+}
+input[type=submit]
+{
+    background-color: #003566;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: 0.4s
+}
+
+input[type=submit]:hover
+{
+    background-color: lightblue;
+    border: none;
+}
+
+table
+{
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 80%;
+    border: 1px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+}
+
+th, td
+{
+    text-align: left;
+    padding: 16px;
+    border-right: solid 1px #f00;
+    border-left: solid 1px #f00;
+    border-color: darkgray;
+}
+
+tr:nth-child(even)
+{
+    background-color: #f2f2f2;
+}
+
+.column
+{
+    float: left;
+    width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after
+{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#nameheader
+{
+    color: black;
+    text-align: center;
+    font-size: 50px;
+}
+
