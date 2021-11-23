@@ -22,7 +22,7 @@
         <p style="font-size:200%;">
             <input type="text" id="usernamebox" name="user" placeholder="Username"/><br>
             <input type="password" id="passwordbox" name="pass" placeholder="Password"/><br>
-            <input type="submit" style="background-color:green;color:white" value="Submit"/>
+            <input type="submit" value="Submit"/>
         </p>
     </form>
     <hr><br>
@@ -57,8 +57,8 @@ function getRandomUser()
     <script type="text/javascript">
         var usernamebox = document.getElementById("usernamebox");
         var passwordbox = document.getElementById("passwordbox");
-        usernamebox.value = "<?php echo $row['username'];?>";
-        passwordbox.value = "<?php echo $row['password'];?>";
+        usernamebox.value = "<?php echo $row['UserID'];?>";
+        passwordbox.value = "<?php echo $row['Password'];?>";
     </script>
 <?php
 

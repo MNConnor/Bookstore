@@ -38,10 +38,21 @@ if($_SESSION["user_role"] != 'Admin')
             <h2 style="text-align:center">Find Book</h2>
             <form action="" method="POST" style="align-content: center">
                 <p style="font-size:200%;">
-                    <input type="text" id="booksearch" name="booksearch" placeholder="Book"/><br>
+                    <input type="text" id="booksearch" name="booksearch" placeholder="Enter Book Title or Author Name"/><br>
                     <input type="submit" name="bookSearchButton" style="background-color:green;color:white" value="Search"/>
                 </p>
             </form>
+            <?php
+            if(isset($_POST['bookSearchButton']))
+            {
+                getBooksTable();
+            }
+            if(array_key_exists('editBook_ID',$_POST))
+            {
+                editBookInfo($_POST['editBook_ID']);
+            }
+                ?>
+
 
 
         </div>
@@ -54,19 +65,19 @@ if($_SESSION["user_role"] != 'Admin')
 </html>
 
 <?php
-$FindBookResults = null;
+//$FindBookResults = null;
+//
+//function setBookResults($result)
+//{
+//    global $FindBookResults;
+//    $FindBookResults = $result;
+//}
 
-function setBookResults($result)
-{
-    global $FindBookResults;
-    $FindBookResults = $result;
-}
-
-function getBookResults()
-{
-    global $FindBookResults;
-    return $FindBookResults;
-}
+//function getBookResults()
+//{
+//    global $FindBookResults;
+//    return $FindBookResults;
+//}
 
 function makeDBconnection()
 {
@@ -108,16 +119,16 @@ function test_input($data)
     return $data;
 }
 
-if(isset($_POST['bookSearchButton']))
+function getBooksTable()
 { //check if form was submitted
     $conn = makeDBconnection();
     $input = $_POST['booksearch']; //get input text
     $input = test_input($input); // Clean input data
-    $sql = "SELECT * FROM BOOKSTORE.BOOKS WHERE Title LIKE \"%{$input}%\"";
+    $sql = "SELECT BOOKS.BookID, Books.Title, Author.First_Name, Author.Last_Name FROM BOOKSTORE.BOOKS JOIN BOOKSTORE.AUTHOR ON BOOKS.AuthID = Author.AuthID WHERE Books.Title LIKE \"%{$input}%\" OR Author.First_Name LIKE \"%{$input}%\" OR Author.Last_Name LIKE \"%{$input}%\"";
     mysqli_query($conn, $sql);
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
-    global $FindBookResults;
-    $FindBookResults = $result;
+//    global $FindBookResults;
+//    $FindBookResults = $result;
     ?>
 
                 <table>
@@ -126,21 +137,27 @@ if(isset($_POST['bookSearchButton']))
                         <td colspan="3" style="text-align:center">Books</td>
                     </tr>
                     <tr>
-                        <td>BookID</td>
+                        <td>Edit</td>
                         <td>Title</td>
-                        <td>AuthID</td>
+                        <td>Author</td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
-                $result = getBookResults();
+//                $result = getBookResults();
                 while ($row = mysqli_fetch_assoc($result))
                 {
                     ?>
                     <tr>
-                        <td><?php echo $row['BookID']?></td>
+                        <td>
+<!--                            EDIT BUTTON-->
+                            <form method="post">
+                                <input type="submit" name="editBook" id="editBook" value="Edit"/>
+                                <input type="hidden" name="editBook_ID" value="<?php echo $row['BookID']; ?>"/>
+                            </form>
+                        </td>
                         <td><?php echo $row['Title']?></td>
-                        <td><?php echo $row['AuthID']?></td>
+                        <td><?php echo $row['First_Name'] . " " . $row['Last_Name']?></td>
                     </tr>
 
                     <?php
@@ -154,5 +171,88 @@ if(isset($_POST['bookSearchButton']))
             </table>
     <?php
 }
-?>
+
+function editBookInfo($BookID)
+{
+    $conn = makeDBconnection();
+    $sql = "SELECT * FROM BOOKSTORE.BOOKS JOIN BOOKSTORE.AUTHOR ON BOOKS.AuthID = Author.AuthID JOIN BOOKSTORE.EDITION ON Books.BookID = edition.BookID WHERE Books.BookID = \"{$BookID}\";";
+    mysqli_query($conn, $sql);
+    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    $row = mysqli_fetch_assoc($result);
+    ?>
+    <form method="POST" action="" id="my_form"></form>
+    <table>
+        <td colspan="3" style="text-align:center">Book Details</td>
+        </tr>
+        <tr>
+            <td>Book ID</td>
+            <td>Title</td>
+            <td>Author</td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" name="BookIDValue" form="my_form" value="<?php echo $row['BookID'];?>" />
+            </td>
+            <td>
+                <input type="text" name="TitleValue" form="my_form" value="<?php echo $row['Title'];?>" />
+            </td>
+            <td>
+                <select name="AuthIDValue" id="AuthIDValue" form="my_form">
+                    <option selected name="AuthIDValue" value=<?php echo $row['AuthID'];?>> <?php echo $row['First_Name'] . " " . $row['Last_Name'];?> </option>
+                    <?php
+                    mysqli_free_result($result);
+                    $sql = "SELECT AuthID, First_Name, Last_Name FROM BOOKSTORE.AUTHOR";
+                    mysqli_query($conn, $sql);
+                    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+                    while ($row = mysqli_fetch_assoc($result))
+                    {
+                        ?>
+                        <option name="AuthIDValue" value=<?php echo $row['AuthID'];?>> <?php echo $row['First_Name'] . " " . $row['Last_Name'];?> </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align:center">Pricing</td>
+        </tr>
+        <?php
+        $sql = "SELECT * FROM BOOKSTORE.BOOKS JOIN BOOKSTORE.AUTHOR ON BOOKS.AuthID = Author.AuthID JOIN BOOKSTORE.EDITION ON Books.BookID = edition.BookID WHERE Books.BookID = \"{$BookID}\";";
+        $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+            while ($row = mysqli_fetch_assoc($result))
+            {
+            ?>
+            <tr>
+                <td colspan="2"><?php echo $row['Format'];?></td>
+                <td>
+                    <input type="text" name="<?php echo explode(" ", $row['Format'])[0];?>" form="my_form" value="<?php echo $row['Price'];?>" />
+                </td>
+            </tr>
+        <?php
+            }
+
+        ?>
+    </table>
+    <input type="submit" name="editBooksSubmitButton" form="my_form" value="Submit"/>
+    <div id='map' style='width: 400px; height: 300px;'></div>
+    <?php
+}
+
+if(isset($_POST['editBooksSubmitButton']))
+{
+    echo("<p>{$_POST['TitleValue']} has been updated</p>");
+    $conn = makeDBconnection();
+    $sql = "UPDATE BOOKSTORE.BOOKS SET BookID=\"{$_POST['BookIDValue']}\", Title=\"{$_POST['TitleValue']}\", AuthID=\"{$_POST['AuthIDValue']}\" WHERE Books.BookID = \"{$_POST['BookIDValue']}\"";
+    mysqli_query($conn, $sql);
+
+    $sql = "SELECT * FROM BOOKSTORE.BOOKS JOIN BOOKSTORE.AUTHOR ON BOOKS.AuthID = Author.AuthID JOIN BOOKSTORE.EDITION ON Books.BookID = edition.BookID WHERE Books.BookID = \"{$_POST['BookIDValue']}\";";
+    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        $sql = "UPDATE BOOKSTORE.EDITION SET PRICE = \"{$_POST[explode(" ", $row['Format'])[0]]}\" WHERE BOOKID = \"{$_POST['BookIDValue']}\" AND FORMAT = \"{$row['Format']}\"";
+        mysqli_query($conn, $sql);
+    }
+}
+    ?>
 
