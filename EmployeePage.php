@@ -32,19 +32,9 @@ if($_SESSION["user_role"] != 'Admin')
         <input name="submit" type="submit" value="Books">
     </form>
 
-    <form align="right" name="Sales" method="post" action="Sales.php">
-        <input name="submit" type="submit" value="Sales">
+    <form align="right" name="Authors" method="post" action="Authors.php">
+        <input name="submit" type="submit" value="Authors">
     </form>
-
-    <form align="right" name="rentals" method="post" action="Rentals.php">
-        <input name="submit" type="submit" value="Rentals">
-    </form>
-
-    <form align="right" name="Customers" method="post" action="Customers.php">
-        <input name="submit" type="submit" value="Customers">
-    </form>
-
-
     </body>
 </html>
 

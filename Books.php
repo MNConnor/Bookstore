@@ -52,33 +52,60 @@ if($_SESSION["user_role"] != 'Admin')
                 editBookInfo($_POST['editBook_ID']);
             }
                 ?>
-
-
-
         </div>
 
         <div class="column">
             <h2 style="text-align:center">Add Book</h2>
+            <form method="POST" action="" id="addbookform"></form>
+            <table>
+                <tr>
+                    <td><input type="text" name="BookIDValue" form="addbookform" placeholder="Book ID" required></td>
+                    <td><input type="text" name="TitleValue" form="addbookform" placeholder="Title" required></td>
+
+                    <td style>
+                        <select name="AuthIDValue" id="AuthIDValue" form="addbookform" required>
+                            <option value="" disabled selected>Select Author</option>
+                            <?php
+                            $conn = makeDBconnection();
+                            $sql = "SELECT AuthID, First_Name, Last_Name FROM BOOKSTORE.AUTHOR";
+                            mysqli_query($conn, $sql);
+                            $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+                            while ($row = mysqli_fetch_assoc($result))
+                            {
+                                ?>
+                                <option name="AuthIDValue" value=<?php echo $row['AuthID'];?>> <?php echo $row['First_Name'] . " " . $row['Last_Name'];?> </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><input type="text" name="FormatValue" form="addbookform" placeholder="Format" required></td>
+                    <td><input type="text" name="PriceValue" form="addbookform" placeholder="Price" required></td>
+                    <td><input type="submit" name="addBooksSubmitButton" form="addbookform" value="Add" required></td>
+                </tr>
+
+            </table>
+            <?php
+            if(isset($_POST['addBooksSubmitButton']))
+            {
+
+                $conn = makeDBconnection();
+                $sql = "INSERT INTO BOOKSTORE.BOOKS (BookID, Title, AuthID) VALUES (\"{$_POST['BookIDValue']}\", \"{$_POST['TitleValue']}\", \"{$_POST['AuthIDValue']}\"); ";
+                mysqli_query($conn, $sql) or die("<p>Error adding {$_POST['TitleValue']}");
+                $sql = "INSERT INTO BOOKSTORE.EDITION (BookID, Format, Price) VALUES (\"{$_POST['BookIDValue']}\", \"{$_POST['FormatValue']}\", \"{$_POST['PriceValue']}\"); ";
+                mysqli_query($conn, $sql) or die("<p>Error adding {$_POST['TitleValue']}");
+                echo("<p>{$_POST['TitleValue']} has been added</p>");
+            }
+            ?>
         </div>
     </div>
 </body>
 </html>
 
 <?php
-//$FindBookResults = null;
-//
-//function setBookResults($result)
-//{
-//    global $FindBookResults;
-//    $FindBookResults = $result;
-//}
-
-//function getBookResults()
-//{
-//    global $FindBookResults;
-//    return $FindBookResults;
-//}
-
 function makeDBconnection()
 {
     // Create a connection to the database server.

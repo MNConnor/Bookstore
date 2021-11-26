@@ -40,6 +40,7 @@
     border: none;
 }
 
+
 #undeliveredbutton:hover
 {
     background-color: lightcoral;
@@ -77,7 +78,7 @@ table
 
 th, td
 {
-    text-align: left;
+    text-align: center;
     padding: 16px;
     border-right: solid 1px #f00;
     border-left: solid 1px #f00;
@@ -108,5 +109,21 @@ tr:nth-child(even)
     color: black;
     text-align: center;
     font-size: 50px;
+}
+
+::-webkit-input-placeholder {
+    text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    text-align: center;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+    text-align: center;
+}
+
+:-ms-input-placeholder {
+    text-align: center;
 }
 
